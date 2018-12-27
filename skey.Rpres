@@ -1,0 +1,70 @@
+skey
+========================================================
+author: Bernard yap
+date: 
+autosize: true
+
+Introduction
+========================================================
+
+- Skey is a text input prediction application for the Data Science Capstone project by Johns Hopkins University on Coursera (https://www.coursera.org/learn/data-science-project).
+
+- This deck describes the dataset, algorithm and measured accuracy, along with an overview of the application user interface (UI).
+
+- Shiny app URL: https://cifr.shinyapps.io/skey
+
+- Git repository: https://github.com/cifr/skey
+
+
+The Dataset
+========================================================
+
+![](./dataset.png)
+
+- Dataset includes 102,059,902 words from public blogs, news and twitter: https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip
+
+- Partitioned for training and testing, of which, a small fraction was used for debugging.
+
+
+Prediction Algorithm
+========================================================
+
+- This model provides up to 5 predicted options of the next word, based on up to 3 given previous words.
+
+- The most frequent words are given in the absence of input or when the model offers fewer predictions than requested.
+
+- Given a 3-gram as input, it is assumed that the model has 70% of possible 4-gram starting with the given 3-gram.
+
+- Shorter Ngrams are considered where 2-grams assumed to account for 21% probability and 1-gram 9% of possible predictions.
+
+- Ngrams with 1 occurence and all but the top 5 predictions for each Ngram are pruned, resulting in ~97% memory size reduction.
+ 
+
+Application Overview
+========================================================
+
+![](./screenshot.png)
+
+- After a short delay, one word is predicted. Predicting 5 words is also supported.
+
+- Uncheck profanity filter to allow predictions to include potentially offensive words.
+
+- Model was pre-computed offline, deployed with the app and loaded at startup.
+
+
+Testing for Accuracy
+========================================================
+
+- Tests were conducted by running the prediction model over all possible 4-grams from the test data partition.
+
+- A prediction is successful if and only if the top predicted word matches the test 4-gram.
+
+```{r, echo=FALSE}
+d <- data.frame(Testdata=c("Debug Testing", "Debug Testing", "Testing"), 
+                Model=c("Debug Training", "Training", "Training"), 
+                Accuracy=c("10.12%", "18.86%", "16.99%"), 
+                stringsAsFactors=FALSE)
+kable(d, format="markdown")
+```
+
+- The relatively low accuracy is expected, without considering on-going keystrokes and personalized vocabulary available to typical text input assistant on cellphones.
